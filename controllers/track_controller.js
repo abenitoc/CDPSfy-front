@@ -33,7 +33,7 @@ exports.create = function (req, res) {
 	var id = track.name.split('.')[0];
 	var name = track.originalname.split('.')[0];
 	var extension = track.extension;
-	var url = 'http://localhost:3000/create';
+	var url = 'http://localhost:3000';
 	console.log(req.files);
 	console.log(name);
 	// Aquí debe implementarse la escritura del fichero de audio (track.buffer) en tracks.cdpsfy.es
