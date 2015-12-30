@@ -11,6 +11,7 @@
 git clone https://github.com/aalonsog/CDPSfy.git
 cd CDPSfy
 npm install
+sudo apt-get install mongodb
 </pre>
 
 ### How to configure
