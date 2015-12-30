@@ -1,5 +1,7 @@
 var fs = require('fs');
 var path = require('path');
+var async = require('async');
+var request = require('request');
 var track_model = require('./../models/track');
 
 // Devuelve una lista de las canciones disponibles y sus metadatos
@@ -31,28 +33,38 @@ exports.create = function (req, res) {
 	var id = track.name.split('.')[0];
 	var name = track.originalname.split('.')[0];
 	var extension = track.extension;
-
+	var url = 'http://localhost:3000/create';
+	console.log(req.files);
 	console.log(name);
 	// Aquí debe implementarse la escritura del fichero de audio (track.buffer) en tracks.cdpsfy.es
 	// Esta url debe ser la correspondiente al nuevo fichero en tracks.cdpsfy.es
 
-	var url = '/media/' + name + "." + extension;
-	var write_path =  path.resolve(path.relative("/controllers","/CDPSfy/public/media/")) + "/" + name + "." + extension;
-	console.log(write_path);
-	fs.writeFile( write_path, track.buffer, function(err){
-		if(err){
-			return console.log(err);
+	async.series([function(callback){
+
+		var finalBody;
+		request.post({
+			url: url,
+			form: { extension: extension, name: name, id: id, track: new Buffer(track.buffer)}
 		}
-		console.log("The file was saved!");
-	});
+		, function optionalCallback(err, httpResponse, body) {
+	  if (err) {
+	    return console.error('upload failed:', err);
+	  }
+	  	console.log('Upload successful!  Server responded with:', body);
+			callback(body);
+		});
 
+	}],
+	function(err,results){
+		/*track_model.tracks[id] = {
+			name: name,
+			url: url
+		};*/
+
+		res.redirect('/tracks');
+	})
 	// Escribe los metadatos de la nueva canción en el registro.
-	track_model.tracks[id] = {
-		name: name,
-		url: url
-	};
 
-	res.redirect('/tracks');
 };
 
 // Borra una canción (trackId) del registro de canciones
@@ -62,10 +74,7 @@ exports.destroy = function (req, res) {
 	var trackId = req.params.trackId;
 	var track = track_model.tracks[trackId];
 	var track_url = track.url;
-	// Aquí debe implementarse el borrado del fichero de audio indetificado por trackId en tracks.cdpsfy.es
-	var deletion_path =  path.resolve(path.relative("/controllers","/CDPSfy/public/")) + track_url;
-	console.log(deletion_path);
-	fs.unlink(deletion_path);
+
 	// Borra la entrada del registro de datos
 	delete track_model.tracks[trackId];
 	res.redirect('/tracks');
