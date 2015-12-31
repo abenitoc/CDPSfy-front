@@ -34,11 +34,9 @@ exports.create = function (req, res) {
 	var name = track.originalname.split('.')[0];
 	var extension = track.extension;
 	var url = 'http://localhost:3000';
-	console.log(req.files);
-	console.log(name);
+
 	// Aquí debe implementarse la escritura del fichero de audio (track.buffer) en tracks.cdpsfy.es
 	// Esta url debe ser la correspondiente al nuevo fichero en tracks.cdpsfy.es
-
 	async.series([function(callback){
 
 		var finalBody;
@@ -49,18 +47,24 @@ exports.create = function (req, res) {
 		, function optionalCallback(err, httpResponse, body) {
 	  if (err) {
 	    return console.error('upload failed:', err);
-	  }
+			callback(null, "error");
+		}
 	  	console.log('Upload successful!  Server responded with:', body);
-			callback(body);
+			console.log("body: " + body);
+			var bodyjson = JSON.parse(body);
+			callback(null,bodyjson["url"]);
 		});
 
 	}],
 	function(err,results){
-		/*track_model.tracks[id] = {
-			name: name,
-			url: url
-		};*/
-
+		console.log("results: " + results.response);
+		if(results.status != "error"){
+			console.log(url + "/" +  results[0]);
+			track_model.tracks[id] = {
+				name: name,
+				url: url +"/"+ results[0]
+			};
+		}
 		res.redirect('/tracks');
 	})
 	// Escribe los metadatos de la nueva canción en el registro.
@@ -74,6 +78,8 @@ exports.destroy = function (req, res) {
 	var trackId = req.params.trackId;
 	var track = track_model.tracks[trackId];
 	var track_url = track.url;
+	console.log(track_url);
+	request.del(track_url);
 
 	// Borra la entrada del registro de datos
 	delete track_model.tracks[trackId];
