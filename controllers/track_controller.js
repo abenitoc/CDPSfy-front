@@ -4,6 +4,7 @@ var async = require('async');
 var request = require('request');
 var http = require('http');
 var track_model = require('./../models/track');
+var FormData = require('form-data');
 
 // Devuelve una lista de las canciones disponibles y sus metadatos
 exports.list = function (req, res) {
@@ -39,11 +40,21 @@ exports.create = function (req, res) {
 	// Aquí debe implementarse la escritura del fichero de audio (track.buffer) en tracks.cdpsfy.es
 	// Esta url debe ser la correspondiente al nuevo fichero en tracks.cdpsfy.es
 	async.series([function(callback){
-
-		var finalBody;
+		var formData = {
+			track: {
+		    value:  track.buffer,
+		    options: {
+		      filename: name + "." + extension ,
+					id : id,
+					extension: extension,
+		      contentType: track.mimetype
+		    }
+		  }
+		};
+		console.log(formData);
 		request.post({
 			url: url,
-			form: { extension: extension, name: name, id: id, track: new Buffer(track.buffer)}
+			formData: formData
 		}
 		, function optionalCallback(err, httpResponse, body) {
 	  if (err) {
