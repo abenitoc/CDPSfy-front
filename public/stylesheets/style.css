@@ -1,5 +1,4 @@
 body {
-  padding: 50px;
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
 }
 
@@ -13,7 +12,9 @@ h1 a {
 }
 
 #header {
-	padding-bottom: 20px;
+	padding: 20px;
+  background-color: #669966;
+  font-family: 'Gravitas One', cursive;
 }
 
 #nav-bar {

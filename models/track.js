@@ -19,8 +19,6 @@ var trackSchema = new Schema({
   url: String
 });
 
-
-
 /*exports.tracks = {
 	1: {
 		name: 'Cute',
@@ -41,7 +39,3 @@ var trackSchema = new Schema({
 };*/
 
 var Track = mongoose.model('Track', trackSchema);
-
-Track.find({}, function (err,docs) {
-    console.log(docs);
-});
