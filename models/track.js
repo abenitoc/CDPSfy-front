@@ -1,15 +1,27 @@
-/* 
+/*
 
 Modelo de datos de canciones (track)
 
 track_id: {
 	name: nombre de la canción,
 	url: url del fichero de audio
-} 
+}
 
 */
 
-exports.tracks = {
+var mongoose = require('mongoose'),
+Schema = mongoose.Schema;
+
+var db = mongoose.connect('mongodb://localhost/tracks');
+
+var trackSchema = new Schema({
+  name:  String,
+  url: String
+});
+
+
+
+/*exports.tracks = {
 	1: {
 		name: 'Cute',
 		url: '/media/Cute.mp3'
@@ -26,4 +38,10 @@ exports.tracks = {
 		name: 'Littleidea',
 		url: '/media/Littleidea.mp3'
 	}
-};
+};*/
+
+var Track = mongoose.model('Track', trackSchema);
+
+Track.find({}, function (err,docs) {
+    console.log(docs);
+});

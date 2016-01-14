@@ -5,11 +5,20 @@ var request = require('request');
 var http = require('http');
 var track_model = require('./../models/track');
 var FormData = require('form-data');
+var mongoose = require('mongoose');
+var Track = mongoose.model('Track');
 
 // Devuelve una lista de las canciones disponibles y sus metadatos
 exports.list = function (req, res) {
-	var tracks = track_model.tracks;
-	res.render('tracks/index', {tracks: tracks});
+		tracks = {};
+	  Track.find({}, function (err,tracky) {
+			console.log(tracky);
+			tracky.forEach(function(tr){
+				tracks[tr.name] = tr;
+			});
+			res.render('tracks/index', {tracks: tracks});
+	});
+
 };
 
 // Devuelve la vista del formulario para subir una nueva canción
@@ -20,9 +29,13 @@ exports.new = function (req, res) {
 // Devuelve la vista de reproducción de una canción.
 // El campo track.url contiene la url donde se encuentra el fichero de audio
 exports.show = function (req, res) {
-	var track = track_model.tracks[req.params.trackId];
-	track.id = req.params.trackId;
-	res.render('tracks/show', {track: track});
+	var track = req.params.trackId;
+	console.log(track);
+	Track.findOne({ 'name': track }, 'name url', function(err,tracky){
+		  console.log(tracky);
+			res.render('tracks/show', {track: tracky});
+	});
+
 };
 
 // Escribe una nueva canción en el registro de canciones.
@@ -72,10 +85,16 @@ exports.create = function (req, res) {
 		console.log("results: " + results.response);
 		if(results.status != "error"){
 			console.log(url + "/" +  results[0]);
-			track_model.tracks[id] = {
+			/*track_model.tracks[id] = {
 				name: name,
 				url: url +"/"+ results[0]
-			};
+			};*/
+
+			var new_track = new Track({name : name,
+				url: url +"/"+ results[0]
+			});
+			new_track.save();
+
 		}
 		res.redirect('/tracks');
 	})
@@ -88,12 +107,13 @@ exports.create = function (req, res) {
 // - Eliminar en tracks.cdpsfy.es el fichero de audio correspondiente a trackId
 exports.destroy = function (req, res) {
 	var trackId = req.params.trackId;
-	var track = track_model.tracks[trackId];
-	var track_url = track.url;
-	console.log(track_url);
-	request.del(track_url);
-
-	// Borra la entrada del registro de datos
-	delete track_model.tracks[trackId];
-	res.redirect('/tracks');
+	Track.findOne({ '_id': trackId }, 'url', function(err,tracky){
+			track_url = tracky.url;
+			// Borra la entrada del registro de datos
+			request.del(track_url);
+			//TODO: Handle errors
+			Track.findByIdAndRemove( tracky._id, function(err,tracko){
+					res.redirect('/tracks');
+			});
+	});
 };
