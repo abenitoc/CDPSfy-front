@@ -1,5 +1,10 @@
 body {
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+     padding-top: 50px;
+                background-image:url("/images/srtum.jpeg");
+    background-repeat:no-repeat;
+    background-size: cover;
+    background-attachment: fixed;
 }
 
 a {
@@ -10,7 +15,6 @@ h1 a {
 	text-decoration: none;
 	color: black;
 }
-
 #header {
 	padding: 20px;
   background-color: #669966;
@@ -22,6 +26,7 @@ h1 a {
 	height: 600px;
 	width: 200px;
 	border-right: 3px groove black;
+
 }
 
 #nav-bar ul {
@@ -33,18 +38,13 @@ h1 a {
 	padding-bottom: 20px;
 }
 
-#container-body {
-	padding-left: 250px;
-	width: 900px;
-}
-
 #welcome {
 	padding-left: 50px;
 	text-align: center;
 }
 
-#welcome span {
-	margin-top: 20px;
+#welcome{
+	margin-top: 33vh;
 }
 
 .track {
@@ -91,4 +91,31 @@ h1 a {
 .upload_field {
 	display: block;
 	margin-top: 15px;
+}
+
+
+.navbar{
+	background: #222;
+	color: #313131;
+}
+
+#formUp{
+
+	margin-top: 20vh;
+	background: #313131;
+	color: #fff;
+	padding-top: 5vh;
+	padding-bottom: 10vh;
+	padding-left: 10vh;
+	border-radius: .6em;
+}
+
+@media (min-width : 768px) {
+    .formUp{
+        padding-left: 2vh;
+    }
+    #welcome {
+        margin-top: 10vh;
+    }
+
 }

@@ -48,7 +48,7 @@ exports.create = function (req, res) {
 	var id = track.name.split('.')[0];
 	var name = track.originalname.split('.')[0];
 	var extension = track.extension;
-	var url = 'http://tracks.cdpsfy.com';
+	var url = 'http://tracks.cdpsfy.com/';
 
 	// Aquí debe implementarse la escritura del fichero de audio (track.buffer) en tracks.cdpsfy.es
 	// Esta url debe ser la correspondiente al nuevo fichero en tracks.cdpsfy.es
